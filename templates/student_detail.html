@@ -1,0 +1,11 @@
+k{% extends "base.html" %}
+{% block content %}
+<div class="col-md-8 mx-auto">
+    <h2 class="display-4 text-primary text-center mb-4">Détails de l'étudiant</h2>
+    <ul class="list-group">
+        <li class="list-group-item"><strong>Nom :</strong> {{ student.name }}</li>
+        <li class="list-group-item"><strong>Email :</strong> {{ student.email }}</li>
+    </ul>
+    <a href="{{ url_for('student_list') }}" class="btn btn-secondary mt-3 btn-lg btn-block">Retour à la liste</a>
+</div>
+{% endblock %}

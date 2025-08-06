@@ -1,0 +1,32 @@
+name: Analyse de sécurité Bandit
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  bandit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Cloner le dépôt
+        uses: actions/checkout@v3
+
+      - name: Installer Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Installer les dépendances
+        run: |
+          pip install -r requirements-dev.txt
+          pip install bandit
+
+      - name: Exécuter Bandit
+        run: |
+          bandit -r . -f json -o bandit-report.json
+
+      - name: Afficher le rapport Bandit
+        run: cat bandit-report.json

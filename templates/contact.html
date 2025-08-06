@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="col-md-8 mx-auto">
+    <h2 class="display-4 text-primary text-center mb-4">Contact</h2>
+    <div class="card p-4">
+        <p class="lead text-center">Pour toute question ou suggestion, contactez-nous :</p>
+        <ul class="mb-4">
+            <li>Email : <a href="mailto:styvemavoungou2@gmail.com">styvemavoungou2@gmail.com</a></li>
+            <li>Téléphone : +221771059299 </li>
+            <li>Adresse : Ouest Foire cité Almas, Dakar</li>
+        </ul>
+        <form>
+            <div class="form-group">
+                <label for="nom">Nom</label>
+                <input type="text" class="form-control" id="nom" placeholder="Votre nom">
+            </div>
+            <div class="form-group">
+                <label for="email">Adresse email</label>
+                <input type="email" class="form-control" id="email" placeholder="Votre email">
+            </div>
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea class="form-control" id="message" rows="3" placeholder="Votre message"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Envoyer</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

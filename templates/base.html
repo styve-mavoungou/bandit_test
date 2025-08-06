@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion des étudiants</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <style>
+        html, body { height: 100%; }
+        body { min-height: 100vh; position: relative; padding-bottom: 70px; background: #f8f9fa; }
+        .container { background: #fff; padding: 40px 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);}
+        h1, h2 { color: #007bff; font-size: 2.5rem; font-weight: bold; }
+        .lead, p, label, th, td { font-size: 1.3rem; }
+        .navbar { font-size: 1.2rem; }
+        footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: #343a40;
+            color: #fff;
+            padding: 15px 0;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="collapse navbar-collapse justify-content-end">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Accueil</a></li>
+		<li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">Inscription</a></li>
+		<li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Connexion</a></li>
+		<li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Déconnexion</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('student_list') }}">Liste des étudiants</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('add_student') }}">Ajouter un étudiant</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('export_csv') }}">Exporter CSV</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('contact') }}">Contact</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('search_student') }}">Recherche</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">À propos</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container mt-5 mb-5">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-info text-center display-4">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+    <footer>
+        Gestion des étudiants &copy; 2025 | Propulsé par Flask
+    </footer>
+</body>
+</html>
