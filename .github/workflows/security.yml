@@ -1,4 +1,4 @@
-name: Analyse de sécurité Bandit
+name: Analyse de sécurité avec Bandit
 
 on:
   push:
@@ -7,52 +7,31 @@ on:
     branches: [ "main" ]
 
 jobs:
-  bandit-analysis:
+  bandit-scan:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Cloner le dépôt
+      - name: Récupération du code
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # Nécessaire pour une analyse complète
 
-      - name: Installer Python
+      - name: Installation de Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
-          
-      - name: Mettre à jour pip
-        run: python -m pip install --upgrade pip
+          python-version: '3.10'
 
-      - name: Installer les dépendances
-        run: |
-          pip install -r requirements-dev.txt
-          pip install bandit
+      - name: Installation de Bandit
+        run: pip install bandit
 
-      - name: Exécuter Bandit avec configuration
-        run: |
-          # Crée un fichier de configuration si inexistant
-          if [ ! -f .bandit ]; then
-            echo -e "[bandit]\nexclude: */tests/*,*/venv/*\nskips: B101" > .bandit
-          fi
-          
-          # Exécute Bandit avec gestion des erreurs
-          bandit -r . \
-            -f json -o bandit-report.json \
-            || echo "Bandit a trouvé des problèmes" && exit 0
-
-      - name: Uploader le rapport Bandit
-        uses: actions/upload-artifact@v3
-        if: always()
+      - name: Lancer l'analyse Bandit et générer un rapport
+        id: bandit-analysis
+        # Ajout de --exit-zero pour éviter l'échec du job
+        # et utilisation du format HTML pour le rapport
+        run: bandit -r . -f html -o bandit-report.html --exit-zero
+        continue-on-error: true
+      
+      - name: Uploader le rapport d'analyse
+        uses: actions/upload-artifact@v4
         with:
-          name: bandit-report
-          path: bandit-report.json
-
-      - name: Afficher les résultats
-        run: |
-          if [ -f bandit-report.json ]; then
-            echo "Résumé de l'analyse Bandit:"
-            jq '.metrics._totals | {lignes: .loc, problèmes: .nosec}' bandit-report.json || cat bandit-report.json
-          else
-            echo "Aucun rapport Bandit généré"
-          fi
+          name: bandit-security-report
+          path: bandit-report.html
+          retention-days: 5
