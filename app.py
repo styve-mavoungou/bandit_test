@@ -78,21 +78,35 @@ def about():
 def contact():
     return render_template('contact.html')
 
-# Nouvelles routes pour l'authentification
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
-        # Ajout dans la table User (authentification)
-        hashed_pw = generate_password_hash(form.password.data)
-        user = User(username=form.username.data, password=hashed_pw)
-        db.session.add(user)
-        # Ajout dans la table Student (liste des étudiants)
-        student = Student(name=form.username.data, email=form.email.data)
-        db.session.add(student)
-        db.session.commit()
-        flash('Inscription réussie. Connectez-vous.')
-        return redirect(url_for('login'))
+        # Vérifier si l'utilisateur existe déjà
+        existing_user = User.query.filter_by(username=form.username.data).first()
+        if existing_user:
+            flash('Ce nom d\'utilisateur est déjà pris. Veuillez en choisir un autre.', 'error')
+            return redirect(url_for('register'))
+        # Vérifier si l'email est déjà utilisé
+        existing_email = Student.query.filter_by(email=form.email.data).first()
+        if existing_email:
+            flash('Cet email est déjà utilisé. Veuillez en choisir un autre.', 'error')
+            return redirect(url_for('register'))
+        try:
+            # Ajout dans la table User (authentification)
+            hashed_pw = generate_password_hash(form.password.data)
+            user = User(username=form.username.data, password=hashed_pw)
+            db.session.add(user)
+            # Ajout dans la table Student (liste des étudiants)
+            student = Student(name=form.username.data, email=form.email.data)
+            db.session.add(student)
+            db.session.commit()
+            flash('Inscription réussie. Connectez-vous.', 'success')
+            return redirect(url_for('login'))
+        except Exception as e:
+            db.session.rollback()
+            flash('Une erreur est survenue lors de l\'inscription. Veuillez réessayer.', 'error')
+            app.logger.error(f"Erreur lors de l'inscription: {str(e)}")
     return render_template('register.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -114,7 +128,10 @@ def logout():
     flash('Déconnexion réussie.')
     return redirect(url_for('login'))
 
+#if __name__ == '__main__':
+ #   with app.app_context():
+ #       db.create_all()
+ #   app.run(debug=True)
+
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)  # Autorise toutes les IP

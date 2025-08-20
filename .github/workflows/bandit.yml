@@ -1,0 +1,29 @@
+name: Bandit Security Scan
+
+on: [push, pull_request]
+
+jobs:
+  bandit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Installer Bandit
+        run: pip install bandit
+
+      - name: Analyse du code Python avec Bandit
+        run: bandit -r python-app -f html -o rapport_bandit_python.html
+
+      - name: Upload rapport Bandit Python
+        uses: actions/upload-artifact@v4
+        with:
+          name: bandit-python
+          path: rapport_bandit_python.html
+
+      - name: (PHP) Placeholder
+        run: echo "Pour PHP utiliser PHPStan/PHPCS ou SonarQube."
