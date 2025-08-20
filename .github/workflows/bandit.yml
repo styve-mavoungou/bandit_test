@@ -17,7 +17,11 @@ jobs:
         run: pip install bandit
 
       - name: Analyse du code Python avec Bandit
-        run: bandit -r python-app -f html -o rapport_bandit_python.html
+        run: |
+          echo "=== Résultats Bandit dans la console ==="
+          bandit -r python-app -f txt
+          echo "=== Génération du rapport HTML ==="
+          bandit -r python-app -f html -o rapport_bandit_python.html
 
       - name: Upload rapport Bandit Python
         uses: actions/upload-artifact@v4
